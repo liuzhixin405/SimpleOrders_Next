@@ -47,6 +47,8 @@ namespace OrderService.Controllers
                 OrderId = id,
                 ProductId = orderDetail.ProductId,
                 Quantity = orderDetail.Quantity
+
+
             }), "order.created", null);
         }
 

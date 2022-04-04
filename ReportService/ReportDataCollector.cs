@@ -22,11 +22,11 @@ namespace ReportService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            subscriber.Subscribe(ProcessMessage);
+            subscriber.Subscribe(Subscribe);
             return Task.CompletedTask;
         }
-
-        private bool ProcessMessage(string message, IDictionary<string, object> headers)
+        private bool Subscribe(string message, IDictionary<string, object> header)
+        //private bool ProcessMessage(string message, IDictionary<string, object> header)
         {
             if (message.Contains("Product"))
             {

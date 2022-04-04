@@ -35,7 +35,7 @@ namespace OrderService
             services.AddSingleton<IOrderCreator>(x => new OrderCreator(connectionString, x.GetService<ILogger<OrderCreator>>()));
             services.AddSingleton<IOrderDeletor>(new OrderDeletor(connectionString));
 
-            services.AddSingleton<IConnectionProvider>(new ConnectionProvider("amqp://guest:guest@localhost:5672"));
+            services.AddSingleton<IConnectionProvider>(new ConnectionProvider("amqp://lx:admin@8.142.71.127:5672/my_vhost"));
             services.AddSingleton<IPublisher>(x => new Publisher(x.GetService<IConnectionProvider>(),
                     "order_exchange",
                     ExchangeType.Topic));
