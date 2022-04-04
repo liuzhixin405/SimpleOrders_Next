@@ -31,6 +31,7 @@ namespace OrderService
                     new { orderId = id, productId = orderDetail.ProductId, quantity = orderDetail.Quantity, productName = orderDetail.Name }, transaction: transaction, commandType: System.Data.CommandType.StoredProcedure);
                 transaction.Commit();
                 return id;
+
             }
             catch(Exception exc)
             {

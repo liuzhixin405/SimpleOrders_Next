@@ -55,8 +55,4 @@ namespace Ecomm
             return Task.CompletedTask;
         }
     }
-
-    
-
-    
 }

@@ -4,6 +4,8 @@ using Ecomm.Models;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Plain.RabbitMQ;
+using MediatR;
+using OrderService.Command;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
@@ -14,14 +16,15 @@ namespace OrderService.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderDetailsProvider orderDetailsProvider;
-        private readonly IPublisher publisher;
+        private readonly Plain.RabbitMQ.IPublisher publisher;
         private readonly IOrderCreator orderCreator;
-
-        public OrderController(IOrderDetailsProvider orderDetailsProvider, IPublisher publisher, IOrderCreator orderCreator)
+        private readonly IMediator mediator;
+        public OrderController(IOrderDetailsProvider orderDetailsProvider, Plain.RabbitMQ.IPublisher publisher, IOrderCreator orderCreator,IMediator mediator)
         {
             this.orderDetailsProvider = orderDetailsProvider;
             this.publisher = publisher;
             this.orderCreator = orderCreator;
+            this.mediator = mediator;
         }
 
         // GET: api/<OrderController>
@@ -50,6 +53,13 @@ namespace OrderService.Controllers
 
 
             }), "order.created", null);
+        }
+
+        [HttpPost("SendOrder")]
+        public async Task<ActionResult<InsertOrderDetailModel>> SendOrder([FromBody] InsertOrderDetailCommand model)
+        {
+            var res = await mediator.Send(model);
+            return Ok(res);
         }
 
         // PUT api/<OrderController>/5

@@ -1,3 +1,4 @@
+using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -30,13 +31,17 @@ namespace OrderService
                     Version = "v1"
                 });
             });
+            services.AddMediatR(typeof(Startup).Assembly);
             var connectionString = Configuration["ConnectionString"];
+            services.AddTransient(x=>new OrderDbContext(connectionString));
+         
+
             services.AddSingleton<IOrderDetailsProvider>(new OrderDetailsProvider(connectionString));
             services.AddSingleton<IOrderCreator>(x => new OrderCreator(connectionString, x.GetService<ILogger<OrderCreator>>()));
             services.AddSingleton<IOrderDeletor>(new OrderDeletor(connectionString));
 
-            services.AddSingleton<IConnectionProvider>(new ConnectionProvider("amqp://lx:admin@8.142.71.127:5672/my_vhost"));
-            services.AddSingleton<IPublisher>(x => new Publisher(x.GetService<IConnectionProvider>(),
+            services.AddSingleton<IConnectionProvider>(new ConnectionProvider("amqp://lx:admin@ipµÿ÷∑:5672/my_vhost2"));
+            services.AddSingleton<Plain.RabbitMQ.IPublisher>(x => new Publisher(x.GetService<IConnectionProvider>(),
                     "order_exchange",
                     ExchangeType.Topic));
             services.AddSingleton<ISubscriber>(x => new Subscriber(x.GetService<IConnectionProvider>(),
@@ -45,6 +50,24 @@ namespace OrderService
                 "inventory.response",
                 ExchangeType.Topic));
 
+            services.AddCap(action =>
+            {
+                action.UseSqlServer(connectionString);
+                action.UseEntityFramework<OrderDbContext>();
+
+                action.UseRabbitMQ(
+                  rb =>
+                  {
+                      rb.HostName = "ipµÿ÷∑";
+                      rb.UserName = "lx";
+                      rb.Password = "admin";
+                      rb.Port = 5672;
+                      rb.VirtualHost = "my_vhost2";
+                      rb.ExchangeName = "order_exchange";
+                  });
+                action.DefaultGroup = "order_response";
+
+            });
             services.AddHostedService<InventoryResponseListener>();
         }
 

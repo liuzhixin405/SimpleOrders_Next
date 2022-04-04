@@ -22,7 +22,7 @@ namespace ReportService
         {
             services.AddControllers();
 
-            services.AddSingleton<IConnectionProvider>(new ConnectionProvider("amqp://lx:admin@8.142.71.127:5672/my_vhost"));
+            services.AddSingleton<IConnectionProvider>(new ConnectionProvider("amqp://lx:admin@ipµÿ÷∑:5672/my_vhost2"));
             services.AddSingleton<ISubscriber>(x => new Subscriber(x.GetService<IConnectionProvider>(),
                     "inventory_exchange",
                     "report_queue",
