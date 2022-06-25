@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using Plain.RabbitMQ;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,7 +29,7 @@ namespace ReportService
         {
             if (message.Contains("Product"))
             {
-                var product = JsonConvert.DeserializeObject<Product>(message);
+                var product = System.Text.Json.JsonSerializer.Deserialize<Product>(message);
                 if (memoryReportStorage.Get().Any(r => r.ProductName == product.ProductName))
                 {
                     return true;
@@ -46,7 +45,7 @@ namespace ReportService
             }
             else
             {
-                var order = JsonConvert.DeserializeObject<Order>(message);
+                var order = System.Text.Json.JsonSerializer.Deserialize<Order>(message);
                 if(memoryReportStorage.Get().Any(r => r.ProductName == order.Name))
                 {
                     memoryReportStorage.Get().First(r => r.ProductName == order.Name).Count -= order.Quantity;

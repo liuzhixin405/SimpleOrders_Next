@@ -1,6 +1,5 @@
 ﻿using Ecomm.Models;
 using Microsoft.Extensions.Hosting;
-using Newtonsoft.Json;
 using Plain.RabbitMQ;
 using System.Collections.Generic;
 using System.Threading;
@@ -27,7 +26,7 @@ namespace OrderService
 
         private bool Subscribe(string message, IDictionary<string, object> header)
         {
-            var response = JsonConvert.DeserializeObject<InventoryResponse>(message);
+            var response = System.Text.Json.JsonSerializer.Deserialize<InventoryResponse>(message);
             if (!response.IsSuccess)
             {
                 orderDeletor.Delete(response.OrderId).GetAwaiter().GetResult();

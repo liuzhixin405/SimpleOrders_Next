@@ -42,6 +42,7 @@ namespace OrderService.Handler
                     Quantity = orderDetail.Entity.Quantity
                 }, new Dictionary<string,string>()) ;
                  trans.Commit();
+                await System.Threading.Tasks.Task.CompletedTask;
                 return new InsertOrderDetailModel { OrderDetailid = orderDetail.Entity.Id, OrderId = order.Entity.Id, Success = true };
             }
         }
