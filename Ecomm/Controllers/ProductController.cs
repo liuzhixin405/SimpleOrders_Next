@@ -2,7 +2,6 @@
 using Ecomm.DataAccess;
 using Ecomm.Models;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using Plain.RabbitMQ;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -40,7 +39,7 @@ namespace Ecomm.Controllers
         [HttpPost]
         public void Post([FromBody] Product product)
         {
-            publisher.Publish(JsonConvert.SerializeObject(product), "report.product", null);
+            publisher.Publish(System.Text.Json.JsonSerializer.Serialize(product), "report.product", null);
         }
 
         // PUT api/<ProductController>/5
